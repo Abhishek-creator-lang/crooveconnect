@@ -4,6 +4,7 @@ import {
   CardMedia,
   CardActions,
   Card,
+  IconButton
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -12,8 +13,8 @@ export const CustomCard = (props) => {
   const {
     image,
     imageAlt,
-    CardHeading,
-    CardDescription,
+    cardHeading,
+    cardDescription,
     onClickFavortite,
     onViewDetail,
   } = props;
@@ -22,10 +23,10 @@ export const CustomCard = (props) => {
       <CardMedia sx={{ height: 140 }} image={image} title={imageAlt} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {CardHeading}
+          {cardHeading}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {CardDescription}
+          {cardDescription}
         </Typography>
       </CardContent>
       <CardActions>

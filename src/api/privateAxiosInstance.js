@@ -1,6 +1,6 @@
 import axios from "axios";
-import { apierrorType } from "../constant/constant";
 import { getToken, logoutUser } from "../utils";
+import { apierrorType } from "../utils/constant";
 
 const privateAxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
