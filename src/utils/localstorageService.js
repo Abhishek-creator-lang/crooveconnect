@@ -21,7 +21,7 @@ export const getLocalStorageItem = (key) => {
 
   // value modified by user
   if (_.isError(decryptedVal) || _.isEmpty(decryptedVal)) {
-    this.removeItem(key);
+    localStorage.removeItem(key);
     return null;
   }
 

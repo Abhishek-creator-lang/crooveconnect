@@ -20,28 +20,8 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight: personName.includes(name)
-      ? theme.typography.fontWeightMedium
-      : theme.typography.fontWeightRegular,
-  };
-}
-
-export const MultipleSelectChip = () => {
+export const MultipleSelectChip = (props) => {
+  const { label, displayData, handleChangeFilter, value = [] } = props;
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 
@@ -49,53 +29,42 @@ export const MultipleSelectChip = () => {
     const {
       target: { value },
     } = event;
-    console.log(value, "hey");
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    console.log(value, "Selected Ingredients");
+    setPersonName(value);
+    handleChangeFilter(value);
   };
 
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }} size="small">
-        <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+        <InputLabel id="demo-multiple-chip-label">{label}</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
-          value={personName}
+          value={value}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
+              {selected?.map((value) => (
+                <Chip
+                  key={value.ingredient_name}
+                  label={value.ingredient_name}
+                />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          <ListSubheader>Category 1</ListSubheader>
-          {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
-          <ListSubheader>Category 1</ListSubheader>
-          {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          {displayData?.map((data) => {
+            const items = data?.ingredients?.map((ingredient) => (
+              <MenuItem key={ingredient.ingredient_name} value={ingredient}>
+                {ingredient.ingredient_name}
+              </MenuItem>
+            ));
+            return [<ListSubheader>{data.category_name}</ListSubheader>, items];
+          })}
         </Select>
       </FormControl>
     </div>

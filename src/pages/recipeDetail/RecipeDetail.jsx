@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomChip } from "../../components/customChip/CustomChip";
 import { CustomRating } from "../../components/customRating/customRating";
 import { recepieDAta } from "../../recipeDetail";
@@ -7,12 +7,38 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import Grid from "@mui/material/Grid2";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { CustomSlider } from "../../components/customSlider/CustomSlider";
-import DifferenceIcon from '@mui/icons-material/Difference';
+import DifferenceIcon from "@mui/icons-material/Difference";
+import { useAPI } from "../../hooks/useAPI";
+import { APIRequestType } from "../../utils/constant";
+import { useParams } from "react-router-dom";
 
 export const RecipeDetail = (props) => {
-  const [recipeData, setRecipeData] = useState(recepieDAta);
-  const { steps, ingredients, title, description, difficulty, cuisine, image } =
-    recipeData;
+  const {
+    data: recipeData,
+    loading,
+    error,
+    callAPI,
+  } = useAPI({
+    type: APIRequestType.get,
+    isPublic: true,
+  });
+  const { id } = useParams();
+  const [servings, setServings] = useState(1)
+  const {
+    difficulty,
+    instructions,
+    name,
+    description,
+    cooking_time,
+    cuisine,
+    image = 'https://media.istockphoto.com/id/1973211564/photo/blank-recipe-card-mockup-on-white-wooden-table.jpg?s=1024x1024&w=is&k=20&c=gc4Uw1UdYkZ80hBWHD2gQ2GDI8tC0X8sHg_JKPEA6O8=',
+    ingredients,
+  } = recipeData?.data || {};
+
+  useEffect(() => {
+    callAPI(`api/get-recipe/${id}`);
+  }, []);
+
   return (
     <Box padding={"10px"}>
       <Grid container sx={{ marginBottom: "20px", marginTop: "20px" }}>
@@ -32,7 +58,7 @@ export const RecipeDetail = (props) => {
         <Grid item size={{ md: 8 }}>
           <Box flexGrow={1}>
             <Typography component={"h1"} fontSize="2rem">
-              {title}
+              {name}
             </Typography>
             <Typography marginBottom="10px">{description}</Typography>
             <CustomRating />
@@ -46,7 +72,10 @@ export const RecipeDetail = (props) => {
                 icon={<FavoriteIcon fontSize="sm" />}
                 label="Favorites"
               />
-              <CustomChip label={difficulty} icon={<DifferenceIcon fontSize="sm" />}/>
+              <CustomChip
+                label={difficulty}
+                icon={<DifferenceIcon fontSize="sm" />}
+              />
               <CustomChip
                 label={cuisine}
                 icon={<ClearAllIcon fontSize="sm" />}
@@ -59,13 +88,16 @@ export const RecipeDetail = (props) => {
                   gap: "20px",
                   alignItems: "center",
                   flexGrow: 1,
-                  justifySelf:"end",
-                  justifyContent:"end"
+                  justifySelf: "end",
+                  justifyContent: "end",
                 }}
               >
-                <Typography fontWeight={600}>servings:</Typography>
+                <Typography fontWeight={600}>servings:{servings}</Typography>
                 <Box sx={{ minWidth: "100px" }}>
-                  <CustomSlider />
+                  <CustomSlider onChange={(event)=>{
+                    const {value} = event.target
+                      setServings(value)
+                  }} />
                 </Box>
               </Box>
             </Stack>
@@ -80,9 +112,11 @@ export const RecipeDetail = (props) => {
             </Typography>
           </Stack>
           {ingredients?.map((ingredient, index) => {
+            const { name, quantity } = ingredient;
             return (
-              <Box>
-                <Typography>{ingredient}</Typography>
+              <Box sx={{ display: "flex" }}>
+                <Typography>{quantity}</Typography>
+                <Typography>{name}</Typography>
               </Box>
             );
           })}
@@ -91,10 +125,10 @@ export const RecipeDetail = (props) => {
           <Typography fontWeight={600} fontSize="1rem">
             Steps
           </Typography>
-          {steps?.map((step, index) => {
+          {instructions?.split(",")?.map((step, index) => {
             return (
               <Box>
-                <Typography>Step {index+1}</Typography>
+                <Typography>Step {index + 1}</Typography>
                 <Typography>{step}</Typography>
               </Box>
             );
