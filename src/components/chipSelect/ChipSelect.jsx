@@ -12,7 +12,7 @@ import {
 import { CustomChip } from "../customChip/CustomChip";
 
 export const ChipSelect = (props) => {
-  const { SelectIcon, selectLabel, items, handleChange } = props;
+  const { SelectIcon, selectLabel, items, handleChange, onClickIcon } = props;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
@@ -21,7 +21,7 @@ export const ChipSelect = (props) => {
   };
 
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (anchorRef.current && anchorRef.current.contains(event?.target)) {
       return;
     }
 
@@ -56,7 +56,7 @@ export const ChipSelect = (props) => {
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
-        icon={<SelectIcon fontSize="sm" />}
+        icon={<SelectIcon fontSize="sm" onClick={onClickIcon} />}
         label={selectLabel}
       />
       <Popper
@@ -88,7 +88,7 @@ export const ChipSelect = (props) => {
                       <MenuItem
                         onClick={() => {
                           handleChange(item.value);
-                          handleClose();
+                          handleClose()
                         }}
                       >
                         {item.label}

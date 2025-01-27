@@ -4,14 +4,17 @@ import {
   CardMedia,
   CardActions,
   Card,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
+const dummyImage =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyqtRk3csjRytPXntUK-eClQjrc3NVTLNuDA&s";
+
 export const CustomCard = (props) => {
   const {
-    image,
+    image = dummyImage,
     imageAlt,
     cardHeading,
     cardDescription,
